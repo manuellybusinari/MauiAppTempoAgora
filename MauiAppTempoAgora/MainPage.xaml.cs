@@ -1,6 +1,5 @@
 ﻿using MauiAppTempoAgora.Models;
 using MauiAppTempoAgora.Services;
-using System.Threading.Tasks;
 
 namespace MauiAppTempoAgora
 {
@@ -13,11 +12,11 @@ namespace MauiAppTempoAgora
         }
         private async void Button_Clicked_Previsao(object sender, EventArgs e)
         {
-           try
+            try
             {
                 if (!string.IsNullOrEmpty(txt_cidade.Text)) // Se estiver nulo/vazio, fazer a consulta 
                 {
-                    Tempo? t = await DataService.GetPrevisao (txt_cidade.Text);
+                    Tempo? t = await DataService.GetPrevisao(txt_cidade.Text);
 
                     if (t != null)
                     {
@@ -36,17 +35,24 @@ namespace MauiAppTempoAgora
 
                         lbl_res.Text = dados_previsao;
 
+                        string mapa = $"https://embed.windy.com/embed.html?" +
+                            $"type=map&location=coordinates&metricRain=default" +
+                            $"&metricTemp=default&metricWind=default&zoom=5&overlay=wind&product=ecmwf&level=surface" +
+                            $"&lat={t.lat.ToString().Replace(",",".")}&lon={t.lon.ToString().Replace(",",".")}";
+                        wv_mapa.Source = mapa; 
 
                     }
                     else
                     {
                         lbl_res.Text = "Sem dados de previsão";
                     }
-                } else
-                {
-                    lbl_res.Text = "Preencher a cidade"; 
                 }
-            } catch (Exception ex)
+                else
+                {
+                    lbl_res.Text = "Preencher a cidade";
+                }
+            }
+            catch (Exception ex)
             {
 
                 await DisplayAlert("Ops", ex.Message, "OK");
@@ -59,7 +65,7 @@ namespace MauiAppTempoAgora
             try
             {
                 GeolocationRequest request = new GeolocationRequest(
-                        GeolocationAccuracy.Medium, 
+                        GeolocationAccuracy.Medium,
                         TimeSpan.FromSeconds(10) // Tenta Procurar por 10 segundos 
                     );
 
@@ -77,7 +83,7 @@ namespace MauiAppTempoAgora
                 }
                 else
                 {
-                    lbl_coords.Text="Nenhuma loclaização";
+                    lbl_coords.Text = "Nenhuma loclaização";
                 }
 
             }
@@ -92,9 +98,9 @@ namespace MauiAppTempoAgora
             }
             catch (PermissionException pEx)
             {
-                await DisplayAlert("Erro: Permissão da Localização", pEx.Message, "OK"); 
+                await DisplayAlert("Erro: Permissão da Localização", pEx.Message, "OK");
             }
-            catch(Exception ex) //catch genérico
+            catch (Exception ex) //catch genérico
             {
                 await DisplayAlert("Erro", ex.Message, "OK");
             }
@@ -103,17 +109,19 @@ namespace MauiAppTempoAgora
 
         private async void GetCidade(double lat, double lon) // retorna preenchimento automático qual cidade eu estou 
         { //Habilite o try/catch para não crachear!!! - Habilite oo Token em depuração Windows
-            try { 
-            // Conceito Placemark 
-            IEnumerable<Placemark> places = await Geocoding.Default.GetPlacemarksAsync(lat, lon);
-            
-            Placemark? place = places.FirstOrDefault();  
-
-            if (place != null)
+            try
             {
-                txt_cidade.Text = place.Locality;
+                // Conceito Placemark 
+                IEnumerable<Placemark> places = await Geocoding.Default.GetPlacemarksAsync(lat, lon);
+
+                Placemark? place = places.FirstOrDefault();
+
+                if (place != null)
+                {
+                    txt_cidade.Text = place.Locality;
+                }
             }
-            } catch (Exception ex)
+            catch (Exception ex)
             {
                 await DisplayAlert("Erro: Obtenção do nome da cidade", ex.Message, "OK");
             }

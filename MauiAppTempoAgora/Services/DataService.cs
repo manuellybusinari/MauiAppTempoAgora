@@ -1,9 +1,6 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
-using  System.Threading.Tasks;
-using MauiAppTempoAgora.Models;
+﻿using MauiAppTempoAgora.Models;
 using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace MauiAppTempoAgora.Services
 {
@@ -37,14 +34,14 @@ namespace MauiAppTempoAgora.Services
                         DateTime sunrise = time.AddSeconds((double)rascunho["sys"]["sunrise"]).ToLocalTime();
                         DateTime sunset = time.AddSeconds((double)rascunho["sys"]["sunset"]).ToLocalTime();
 
-                        t= new()
+                        t = new()
                         {
-                            lat= (double)rascunho["coord"]["lat"],
-                            lon= (double)rascunho["coord"]["lon"],
-                            description= (string)rascunho["weather"][0]["description"],
+                            lat = (double)rascunho["coord"]["lat"],
+                            lon = (double)rascunho["coord"]["lon"],
+                            description = (string)rascunho["weather"][0]["description"],
                             main = (string)rascunho["weather"][0]["main"],
-                            temp_min =  (double)rascunho["main"]["temp_min"],
-                            temp_max= (double)rascunho["main"]["temp_max"],
+                            temp_min = (double)rascunho["main"]["temp_min"],
+                            temp_max = (double)rascunho["main"]["temp_max"],
                             speed = (double)rascunho["wind"]["speed"],
                             visibility = (int)rascunho["visibility"],
                             sunrise = sunrise.ToString(),
@@ -74,8 +71,7 @@ namespace MauiAppTempoAgora.Services
                 }
             }
             //------------------------------------------------
-            return t; 
+            return t;
         }
     }
 }
- 
